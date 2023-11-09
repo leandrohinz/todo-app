@@ -1,0 +1,72 @@
+version: "3"
+services:
+  frontend:
+    build: ./frontend
+    environment:
+      PORT: 8080
+      AUTH_API_ADDRESS: http://AUTH-API:8081
+      TODOS_API_ADDRESS: http://TODOS-API:8082
+    ports:
+      - 8080:8080
+    networks:
+        - vnet1
+    depends_on:
+      - auth-api
+      - todos-api
+      - users-api
+  auth-api:
+    build: ./auth-api
+    environment:
+      AUTH_API_PORT: 8081
+      JWT_SECRET: foo
+      USERS_API_ADDRESS: http://USERS-API:8083
+    ports:
+      - 8000:8000
+    depends_on:
+      - users-api
+    networks:
+      - vnet1
+  todos-api:
+    build: ./todos-api
+    environment:
+      TODO_API_PORT: 8082
+      JWT_SECRET: foo
+      REDIS_HOST: redis-db
+      REDIS_PORT: 6379
+      REDIS_CHANNEL: log_channel
+    depends_on:
+       - redis-db
+    networks:
+      - vnet1
+    ports:
+      - 8082:8082  
+  users-api:
+    build: ./users-api
+    environment:
+     SERVER_PORT: 8083
+     JWT_SECRET: foo
+    depends_on:
+      - redis-db
+    networks:
+      - vnet1
+    ports:
+      - 8083:8083    
+  log-message-processor:
+    build: ./log-message-processor
+    environment:
+      REDIS_HOST: redis-db
+      REDIS_PORT: 6379
+      REDIS_CHANNEL: log_channel
+    depends_on:
+      - redis-db
+    networks:
+      - vnet1
+  redis-db:
+    image: redis
+    ports: 
+      - 6379:6379
+    networks:
+      - vnet1
+networks:
+  vnet1:
+    driver: bridge 
