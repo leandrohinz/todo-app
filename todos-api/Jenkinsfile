@@ -1,3 +1,4 @@
+//jenkinsfile for ci
 node {   
     stage('Clone repository') {
         git credentialsId: 'git', url: 'https://github.com/leandrohinz/todo-app.git'
