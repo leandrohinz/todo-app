@@ -11,16 +11,9 @@ node {
 	}
 		
     stage('Build image') {
-<<<<<<< HEAD
-        dir('log-message-processor') {
-            dockerImage = docker.build("leandrohinz/log-message-processor:v1")
-        }
-       
-=======
         dir('log-message-processor'){
           dockerImage = docker.build("leandrohinz/log-message-processor:v1")
         }
->>>>>>> 26eb158feabfc963b1f8a814737c5c64bc9991f6
     }
     
  stage('Push image') {
@@ -28,8 +21,4 @@ node {
         dockerImage.push()
         }
     }    
-<<<<<<< HEAD
 }
-=======
-}
->>>>>>> 26eb158feabfc963b1f8a814737c5c64bc9991f6
